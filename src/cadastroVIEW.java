@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
+import javax.swing.JOptionPane;
 /**
  *
  * @author Adm
@@ -140,16 +140,33 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
         String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
+    String valor = cadastroValor.getText();
+    
+    if (nome.isEmpty() || valor.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+        return;
+    }
+    
+    try {
+        ProdutosDTO produto = new ProdutosDTO();
         produto.setNome(nome);
         produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
+        produto.setStatus("A Venda");
         
         ProdutosDAO produtodao = new ProdutosDAO();
         produtodao.cadastrarProduto(produto);
+        
+        JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+        
+        cadastroNome.setText("");
+        cadastroValor.setText("");
+        
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Erro: Valor deve ser um número!");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto!");
+    }
         
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
