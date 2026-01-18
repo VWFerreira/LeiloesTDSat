@@ -2,14 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
 /**
  *
  * @author Adm
@@ -64,5 +62,52 @@ public class ProdutosDAO {
         }
         
         return listagem;
+    }
+    
+    // ============ NOVOS MÉTODOS DA ATIVIDADE 3 ============
+    
+    public void venderProduto(Integer id) {
+        String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+        
+        conn = new conectaDAO().connectDB();
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            prep.setString(1, "Vendido");
+            prep.setInt(2, id);
+            
+            prep.execute();
+            prep.close();
+            
+        } catch (SQLException ex) {
+            System.out.println("Erro ao vender produto: " + ex.getMessage());
+        }
+    }
+    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        
+        conn = new conectaDAO().connectDB();
+        ArrayList<ProdutosDTO> listagemVendidos = new ArrayList<>();
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            
+            while(resultset.next()){
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                
+                listagemVendidos.add(produto);
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Erro ao listar produtos vendidos: " + ex.getMessage());
+        }
+        
+        return listagemVendidos;
     }
 }
